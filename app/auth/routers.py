@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Response, Depends, Cookie, Request
 from utils.fastapi_jwt_auth import auth_scheme
 
-from auth.schemas import AuthDataBasic, AuthDataRefresh, TokenSet
+from auth.schemas import AuthDataBasic, AuthDataRefresh, TokenSetExpiration
 from auth.use_caces import AuthUseCases
 from auth.adapters import SQLAuthDataRepo, JWTManager
 
@@ -37,7 +37,8 @@ auth_uc = AuthUseCases(
 
 @login_routers.post(
         "", 
-        summary = 'Получить JWT токен по логину и паролю'
+        summary = 'Получить JWT токен по логину и паролю',
+        response_model=TokenSetExpiration
         )
 async def login(data: AuthDataBasic, res: Response):
     access, refresh = await auth_uc.get_jwt_by_logpass(data.username, data.password)
@@ -63,13 +64,14 @@ async def login(data: AuthDataBasic, res: Response):
         path='/auth/logout'
     )
 
-    return
+    return TokenSetExpiration(access_ttl=config.JWT_ACCESS_TTL, refresh_ttl=config.JWT_REFRESH_TTL)
 
 
 
 @auth_routers.get(
         "/refresh", 
-        summary = 'Получить JWT токен по refresh-токену'
+        summary = 'Получить JWT токен по refresh-токену',
+        response_model=TokenSetExpiration
         )
 async def refresh_login(requeset: Request, res: Response):
     refresh_token: str = requeset.cookies.get('refresh_token')
@@ -96,7 +98,7 @@ async def refresh_login(requeset: Request, res: Response):
         httponly=True,
         path='/auth/logout'
     )
-    return
+    return TokenSetExpiration(access_ttl=config.JWT_ACCESS_TTL, refresh_ttl=config.JWT_REFRESH_TTL)
 
 
 

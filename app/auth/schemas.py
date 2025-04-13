@@ -34,3 +34,10 @@ class TokenSet(BaseModel):
         """
         access: str
         refresh: str
+
+class TokenSetExpiration(BaseModel):
+       """
+       scheme for return expiration time
+       """
+       access_ttl: int
+       refresh_ttl: int
