@@ -18,7 +18,7 @@ class Storage():
         """
         def create(path, echo):
             if not os.path.isdir(path):
-                os.mkdir(path)
+                os.makedirs(path, exist_ok=True)
             if echo:
                 return path
             
