@@ -43,18 +43,19 @@ server_uc = ServerUseCases(
 
 
 @server_routers.post(
-        "", 
-        summary = 'Создать сервер'
+        "",
+        summary = 'Создать сервер',
+        response_model=Server
         )
 async def create_server(data: ServerCreate, user_id: str = Depends(get_user_id)):
-    await server_uc.create_server(owner_id=user_id, title=data.title, description=data.description)
+    created_server = await server_uc.create_server(owner_id=user_id, title=data.title, description=data.description)
 
-    return
+    return created_server
 
 
 
 @server_routers.get(
-        "", 
+        "",
         summary = 'Получить список серверов, в которых состоит текущий пользователь',
         response_model = list[Server]
         )
@@ -64,7 +65,7 @@ async def get_my_servers(user_id: str = Depends(get_user_id)):
 
 
 @server_routers.get(
-        "/search", 
+        "/search",
         summary = 'Поиск серверов по запросу',
         response_model = list[Server]
         )
@@ -74,23 +75,23 @@ async def search_server(prompt: str, offset: Optional[int] = 0, count: Optional[
 
 
 @server_routers.patch(
-        "/{server_id}", 
+        "/{server_id}",
         summary = 'Редактировать сервер'
         )
 async def edit_server(data: ServerUpdate, server_id: UUID, user_id: str = Depends(get_user_id)):
     await server_uc.edit_server(
-        server_id=server_id, 
-        requester_id=user_id, 
-        new_title=data.title, 
+        server_id=server_id,
+        requester_id=user_id,
+        new_title=data.title,
         new_description=data.description
         )
-    
+
     return
 
 
 
 @server_routers.delete(
-        "/{server_id}", 
+        "/{server_id}",
         summary = 'Удалить сервер'
         )
 async def delete_server(server_id: UUID, user_id: str = Depends(get_user_id)):
@@ -99,7 +100,7 @@ async def delete_server(server_id: UUID, user_id: str = Depends(get_user_id)):
 
 
 @server_routers.get(
-        "/{server_id}", 
+        "/{server_id}",
         summary = 'Получить информацию о сервере',
         response_model = Server
         )
@@ -109,7 +110,7 @@ async def get_server_info(server_id: UUID, user_id: str = Depends(get_user_id)):
 
 
 @server_routers.put(
-        "/{server_id}/logo", 
+        "/{server_id}/logo",
         summary = 'Установить логотип сервера',
         response_model = File
         )
@@ -121,7 +122,7 @@ async def set_server_logo(server_id: UUID, logo: UploadFile, user_id: str = Depe
 
 
 @server_routers.delete(
-        "/{server_id}/logo", 
+        "/{server_id}/logo",
         summary = 'Удалить логотип сервера'
         )
 async def delete_server_logo(server_id: UUID, user_id: str = Depends(get_user_id)):
@@ -130,7 +131,7 @@ async def delete_server_logo(server_id: UUID, user_id: str = Depends(get_user_id
 
 
 @server_routers.get(
-        "/{server_id}/getMembers", 
+        "/{server_id}/getMembers",
         summary = 'Получить список пользователей сервера',
         response_model = list[User]
         )
@@ -140,7 +141,7 @@ async def get_server_members(server_id: UUID, user_id: str = Depends(get_user_id
 
 
 @server_routers.post(
-        "/{server_id}/join", 
+        "/{server_id}/join",
         summary = 'Присоединиться к серверу'
         )
 async def join_to_channel(server_id: UUID, user_id: str = Depends(get_user_id)):
@@ -150,7 +151,7 @@ async def join_to_channel(server_id: UUID, user_id: str = Depends(get_user_id)):
 
 
 @server_routers.post(
-        "/{server_id}/invite", 
+        "/{server_id}/invite",
         summary = 'Пригласить пользователя на сервер'
         )
 async def invite_user_to_channel(server_id: UUID, user: UserInvite, user_id: str = Depends(get_user_id)):
