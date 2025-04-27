@@ -76,7 +76,8 @@ async def search_server(prompt: str, offset: Optional[int] = 0, count: Optional[
 
 @server_routers.patch(
         "/{server_id}",
-        summary = 'Редактировать сервер'
+        summary = 'Редактировать сервер',
+        response_model=Server
         )
 async def edit_server(data: ServerUpdate, server_id: UUID, user_id: str = Depends(get_user_id)):
     await server_uc.edit_server(
@@ -86,7 +87,7 @@ async def edit_server(data: ServerUpdate, server_id: UUID, user_id: str = Depend
         new_description=data.description
         )
 
-    return
+    return server_uc.get_server_by_id(server_id)
 
 
 
@@ -111,8 +112,7 @@ async def get_server_info(server_id: UUID, user_id: str = Depends(get_user_id)):
 
 @server_routers.put(
         "/{server_id}/logo",
-        summary = 'Установить логотип сервера',
-        response_model = File
+        summary = 'Установить логотип сервера'
         )
 async def set_server_logo(server_id: UUID, logo: UploadFile, user_id: str = Depends(get_user_id)):
     await server_uc.set_server_logo(server_id, requester_id=user_id, logo=logo.file)
