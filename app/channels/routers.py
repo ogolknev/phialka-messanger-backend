@@ -66,17 +66,18 @@ async def create_channel(data: ChannelCreate, user_id: str = Depends(get_user_id
 
 @channel_routers.patch(
         "/{channel_id}",
-        summary = 'Редактировать текстовый канал'
+        summary = 'Редактировать текстовый канал',
+        response_model=Channel
         )
 async def edit_channel(data: ChannelUpdate, channel_id: UUID, user_id: str = Depends(get_user_id)):
-    await channel_uc.edit_channel(
+    channel = await channel_uc.edit_channel(
         channel_id = channel_id,
         requester_id = user_id,
         new_title=  data.title,
         new_description = data.description
     )
 
-    return
+    return channel
 
 
 
