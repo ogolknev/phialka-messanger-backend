@@ -48,23 +48,24 @@ channel_uc = ChannelUseCases(
 
 
 @channel_routers.post(
-        "", 
-        summary = 'Создать текстовый канал'
+        "",
+        summary = 'Создать текстовый канал',
+        response_model=Channel
         )
 async def create_channel(data: ChannelCreate, user_id: str = Depends(get_user_id)):
-    await channel_uc.create_channel(
+    channel = await channel_uc.create_channel(
         requester_id = user_id,
         server_id = data.server_id,
         title = data.title,
         description = data.description
     )
 
-    return
+    return channel
 
 
 
 @channel_routers.patch(
-        "/{channel_id}", 
+        "/{channel_id}",
         summary = 'Редактировать текстовый канал'
         )
 async def edit_channel(data: ChannelUpdate, channel_id: UUID, user_id: str = Depends(get_user_id)):
@@ -80,7 +81,7 @@ async def edit_channel(data: ChannelUpdate, channel_id: UUID, user_id: str = Dep
 
 
 @channel_routers.delete(
-        "/{channel_id}", 
+        "/{channel_id}",
         summary = 'Удалить текстовый канал'
         )
 async def delete_channel(channel_id: UUID, user_id: str = Depends(get_user_id)):
@@ -92,7 +93,7 @@ async def delete_channel(channel_id: UUID, user_id: str = Depends(get_user_id)):
 
 
 @channel_routers.get(
-        "/{channel_id}", 
+        "/{channel_id}",
         summary = 'Получить информацию о текстовом канале',
         response_model = Channel
         )
@@ -102,7 +103,7 @@ async def get_channel_info(channel_id: UUID, user_id: str = Depends(get_user_id)
 
 
 @channel_routers.put(
-        "/{channel_id}/logo", 
+        "/{channel_id}/logo",
         summary = 'Установить логотип канала'
         )
 async def set_channel_logo(channel_id: UUID, logo: UploadFile, user_id: str = Depends(get_user_id)):
@@ -117,7 +118,7 @@ async def set_channel_logo(channel_id: UUID, logo: UploadFile, user_id: str = De
 
 
 @channel_routers.delete(
-        "/{channel_id}/logo", 
+        "/{channel_id}/logo",
         summary = 'Удалить логотип канала'
         )
 async def delete_channel_logo(channel_id: UUID, user_id: str = Depends(get_user_id)):
@@ -129,7 +130,7 @@ async def delete_channel_logo(channel_id: UUID, user_id: str = Depends(get_user_
 
 
 @channel_routers.post(
-        "/{channel_id}/sendMessage", 
+        "/{channel_id}/sendMessage",
         summary = 'Отправить сообщение в текстовый канал',
         tags=['messages']
         )
@@ -141,7 +142,7 @@ async def send_message_to_channel(channel_id: UUID, msg: MessageCreate, requeste
 
 
 @channel_routers.get(
-        "/{channel_id}/messages", 
+        "/{channel_id}/messages",
         summary = 'Получить сообщения из текстового канала',
         response_model = list[ChannelMessage],
         tags=['messages']
@@ -152,7 +153,7 @@ async def get_messages_from_chat(channel_id: UUID, sequence: int, count: Optiona
 
 
 @server_routers.get(
-        "/{server_id}/getChannels", 
+        "/{server_id}/getChannels",
         summary = 'Получить список текстовых каналов на сервере',
         response_model = list[Channel]
         )

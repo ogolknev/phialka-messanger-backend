@@ -87,7 +87,7 @@ async def edit_server(data: ServerUpdate, server_id: UUID, user_id: str = Depend
         new_description=data.description
         )
 
-    return server_uc.get_server_by_id(server_id)
+    return await server_uc.get_server_by_id(server_id)
 
 
 
