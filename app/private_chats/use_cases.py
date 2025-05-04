@@ -15,7 +15,7 @@ from messages.abstracts import MessageRepo
 from files.abstracts import FileRepo, FileStorage
 from exceptions import NotFoundException, AccessDeniedException, ReceiverClosed
 
-from users.use_caces import UserUseCases
+from users.use_cases import UserUseCases
 from messages.use_cases import MessageUseCases
 
 
@@ -126,7 +126,7 @@ class PrivateChatUseCases():
 
         await self.__chat_msg_repo.save(private_msg)
 
-        recs = self.__msg_uc.user_msg_reseivers
+        recs = self.__msg_uc.user_msg_receivers
         for r in recs:
             if (r.user_id == recipient_id) or (r.user_id == requester_id):
                 try:

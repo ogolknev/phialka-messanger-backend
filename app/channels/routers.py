@@ -148,7 +148,7 @@ async def send_message_to_channel(channel_id: UUID, msg: MessageCreate, requeste
         response_model = list[ChannelMessage],
         tags=['messages']
         )
-async def get_messages_from_chat(channel_id: UUID, sequence: int, count: Optional[int] = 10, user_id: str = Depends(get_user_id)):
+async def get_messages_from_chat(channel_id: UUID, sequence: Optional[int] = None, count: Optional[int] = 10, user_id: str = Depends(get_user_id)):
     return await channel_uc.get_channel_messages(requester_id=user_id, channel_id=channel_id, sequence_min=sequence, count=count)
 
 

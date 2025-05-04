@@ -12,7 +12,7 @@ from users.abstracts import UserRepo
 from auth.abstracts import AuthDataRepo
 from files.abstracts import FileRepo, FileStorage
 
-from users.use_caces import UserUseCases
+from users.use_cases import UserUseCases
 from files.use_cases import FileUseCases
 
 from exceptions import NotFoundException, AccessDeniedException

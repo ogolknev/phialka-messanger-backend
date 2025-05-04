@@ -11,7 +11,7 @@ from files.abstracts import FileRepo, FileStorage
 from auth.abstracts import AuthDataRepo
 from users.abstracts import UserRepo, UserMsgReceiver
 
-from users.use_caces import UserUseCases
+from users.use_cases import UserUseCases
 from files.use_cases import FileUseCases
 
 from exceptions import NotFoundException, AccessDeniedException
@@ -46,7 +46,7 @@ class MessageUseCases():
     
 
     @property
-    def user_msg_reseivers(self):
+    def user_msg_receivers(self):
         return self.__user_msg_receivers
 
 

@@ -6,7 +6,7 @@ from fastapi.security import HTTPBearer
 from utils.fastapi_jwt_auth import auth_scheme, get_user_id
 
 from users.schemas import User, UserUpdate, UserCreate
-from users.use_caces import UserUseCases
+from users.use_cases import UserUseCases
 from users.adapters import SQLUserRepo
 
 from files.adapters import SQLFileRepo, SystemFileStorage

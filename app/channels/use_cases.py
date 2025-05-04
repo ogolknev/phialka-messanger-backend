@@ -18,7 +18,7 @@ from messages.abstracts import MessageRepo
 from files.use_cases import FileUseCases
 from servers.use_cases import ServerUseCases
 from messages.use_cases import MessageUseCases
-from users.use_caces import UserUseCases
+from users.use_cases import UserUseCases
 
 from exceptions import NotFoundException, AccessDeniedException, IncorrectValueException, ReceiverClosed
 
@@ -181,17 +181,15 @@ class ChannelUseCases():
 
         member_ids = [m.user_id for m in await self.__server_uc.get_server_members(server_id=channel.server_id, count=100000)]
         
-        for rec in self.__msg_uc.user_msg_reseivers:
+        for rec in self.__msg_uc.user_msg_receivers:
             if rec.user_id in member_ids:
                 await rec.send_message(msg=channel_msg)
                 
         return channel_msg
 
 
-    async def get_channel_messages(self, requester_id: UUID, channel_id: UUID, sequence_min: int, count: Optional[int] = 50) -> list[ChannelMessage]:
-        
-        channel = await self.get_channel_by_id(channel_id=channel_id)
+    async def get_channel_messages(self, requester_id: UUID, channel_id: UUID, sequence_min: Optional[int], count: Optional[int] = 50) -> list[ChannelMessage]:
 
-        msgs = await self.__channel_msg_repo.get(filter=ChannelMessageFilter(channel_id=channel_id, sequence_min=sequence_min))
+        msgs = await self.__channel_msg_repo.get(filter=ChannelMessageFilter(channel_id=channel_id, sequence_min=sequence_min, limit=count))
 
-        return msgs[0:count]
+        return msgs

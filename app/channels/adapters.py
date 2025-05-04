@@ -24,11 +24,11 @@ class SQLChannelRepo(ChannelRepo):
         """
         query = None
 
-        def __without_none(somthing, query = query):
+        def __without_none(something, query = query):
             if query:
-                query = somthing and query
+                query = something and query
             else:
-                query = somthing
+                query = something
             return query
 
         if filter.channel_id:
@@ -109,11 +109,11 @@ class SQLChannelMessageRepo(ChannelMessageRepo):
         """
         query = None
 
-        def __without_none(somthing, query, operation = lambda a, b: a & b):
+        def __without_none(something, query, operation = lambda a, b: a & b):
             if query:
-                query = operation(somthing, query)
+                query = operation(something, query)
             else:
-                query = somthing
+                query = something
             return query
 
         if filter.channel_id:
@@ -138,7 +138,10 @@ class SQLChannelMessageRepo(ChannelMessageRepo):
         query_set = self.__table.objects
 
         if filter:
-            channel_msgs_raw = await query_set.all(self.__serialize_filter(filter))
+            if filter.sequence_min == None:
+                channel_msgs_raw = await query_set.order_by('-sequence').limit(filter.limit).all(self.__serialize_filter(filter))
+            else:
+                channel_msgs_raw = await query_set.limit(filter.limit).all(self.__serialize_filter(filter))
         else:
             channel_msgs_raw = await query_set.all()
 

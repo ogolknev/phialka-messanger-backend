@@ -17,6 +17,7 @@ class ChannelFilter(BaseModel):
 class ChannelMessageFilter(BaseModel):
     channel_id: Optional[UUID] = None
     sequence_min: Optional[int] = None
+    limit: Optional[int] = None
 
 
 
