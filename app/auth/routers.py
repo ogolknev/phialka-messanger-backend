@@ -1,8 +1,10 @@
-from fastapi import APIRouter, Response
+from fastapi import APIRouter, Response, Request, Depends
 
 from auth.schemas import AuthDataBasic, AuthDataRefresh, TokenSet
 from auth.use_caces import AuthUseCases
 from auth.adapters import SQLAuthDataRepo, JWTManager
+
+from utils.fastapi_jwt_auth import auth_scheme
 
 
 
@@ -54,13 +56,14 @@ async def login(data: AuthDataBasic, res: Response):
 
 
 
-@auth_routers.post(
+@auth_routers.get(
         "/refresh", 
         summary = 'Получить JWT токен по refresh-токену',
-        response_model = TokenSet
+        response_model = TokenSet,
+        dependencies=[Depends(auth_scheme)]
         )
-async def refresh_login(data: AuthDataRefresh, res: Response):
-    access, refresh = await auth_uc.refresh_jwt(data.refresh)
+async def refresh_login(req: Request, res: Response):
+    access, refresh = await auth_uc.refresh_jwt(req.cookies["refresh_token"])
     res.set_cookie(
         key='access_token',
         value=access,
