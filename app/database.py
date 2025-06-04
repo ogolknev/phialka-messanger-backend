@@ -1,4 +1,5 @@
 from typing import Optional
+from tenacity import retry, stop_after_attempt, wait_fixed
 
 import databases
 import sqlalchemy
@@ -27,7 +28,7 @@ def __change_db(url: str):
     _database = databases.Database(url)
 
 
-
+@retry(stop=stop_after_attempt(10), wait=wait_fixed(2))
 async def connect_database(database_url: Optional[str] = None):
     """
     Method for connecting to database
